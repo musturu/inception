@@ -1,0 +1,83 @@
+services:
+
+  mariadb:
+    build:
+      context: ./mariadb
+    container_name: mariadb
+    restart: always
+    env_file:
+      - ./mariadb/.env.mariadb
+    environment:
+      MYSQL_ROOT_PASSWORD_FILE: /run/secrets/db_root_password
+      MYSQL_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_root_password
+      - db_password
+    volumes:
+      - $HOME/data/db:/var/lib/mysql
+    networks:
+      - inception
+    ports:
+      - "3306:3306"
+    healthcheck:
+      test: ["CMD", "mariadb-admin", "ping", "-h", "localhost", "-u", "root", "--password=$(cat /run/secrets/db_root_password)"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  wordpress:
+    build:
+      context: ./wordpress
+    container_name: wordpress
+    restart: always
+    env_file:
+      - ./wordpress/.env.wordpress
+    environment:
+      WORDPRESS_DB_PASSWORD_FILE: /run/secrets/db_password
+    secrets:
+      - db_password
+    volumes:
+      - $HOME/data/wp/html:/var/www/html
+    networks:
+      - inception
+    depends_on:
+      - mariadb
+    healthcheck:
+      test: ["CMD", "php-fpm", "-t"]
+      interval: 30s
+      timeout: 10s
+      retries: 5
+      start_period: 20s
+
+  nginx:
+    build:
+      context: ./nginx
+    container_name: nginx
+    restart: always
+    depends_on:
+      - wordpress
+    environment:
+      NGINX_HOST: $USER.42.fr
+    volumes:
+      - $HOME/data/wp/html:/var/www/html:ro
+    networks:
+      - inception
+    ports:
+      - "443:443"
+    healthcheck:
+      test: curl -k -f https://localhost/healthcheck || exit 1
+      interval: 10s
+      timeout: 5s
+      retries: 3
+      start_period: 15s
+
+secrets:
+  db_root_password:
+    file: ../secrets/db_root_password.txt
+  db_password:
+    file: ../secrets/db_password.txt
+
+networks:
+  inception:
+    driver: bridge

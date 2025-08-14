@@ -10,12 +10,12 @@ envs:
 
 gen_env_mariadb: secrets
 	@echo "# .env.mariadb" > ./srcs/mariadb/.env.mariadb
-	@echo "MYSQL_DATABASE=$(USER)" >> ./srcs/mariadb/.env.mariadb
+	@echo "MYSQL_DATABASE=wp_$(USER)" >> ./srcs/mariadb/.env.mariadb
 	@echo "MYSQL_USER=$(USER)" >> ./srcs/mariadb/.env.mariadb
 
 gen_env_wordpress: secrets
 	@echo "# .env.wordpress" > ./srcs/wordpress/.env.wordpress
-	@echo "WORDPRESS_DB_NAME=$(USER)" >> ./srcs/wordpress/.env.wordpress
+	@echo "WORDPRESS_DB_NAME=wp_$(USER)" >> ./srcs/wordpress/.env.wordpress
 	@echo "WORDPRESS_DB_USER=$(USER)" >> ./srcs/wordpress/.env.wordpress
 	@echo "WORDPRESS_DB_HOST=mariadb" >> ./srcs/wordpress/.env.wordpress
 
@@ -25,7 +25,9 @@ volumes:
 	@echo "Creating and setting permissions for volume directories..."
 	mkdir -p $(VOLUME_PATHS)
 	@sudo chown -R 100:101 $(HOME)/data/db
-	@sudo chmod -R 755 $(HOME)/data/db
+	@sudo chmod -R 777 $(HOME)/data/db
+	@sudo chown -R 82:82 $(HOME)/data/wp
+	@sudo chmod -R 777 $(HOME)/data/wp
 	@echo "Volume directories prepared with correct permissions."
 
 secrets:

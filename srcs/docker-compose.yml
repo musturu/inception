@@ -43,8 +43,10 @@ services:
       - inception
     depends_on:
       - mariadb
+    ports:
+      - "9000:9000"
     healthcheck:
-      test: ["CMD", "php-fpm", "-t"]
+      test: ["CMD", "php-fpm81", "-t"]
       interval: 30s
       timeout: 10s
       retries: 5
@@ -58,13 +60,16 @@ services:
     depends_on:
       - wordpress
     environment:
-      NGINX_HOST: $USER.42.fr
+      - NGINX_USER=${USER}
+      - NGINX_HOST=${USER}.42.fr
     volumes:
       - $HOME/data/wp/html:/var/www/html:ro
     networks:
       - inception
     ports:
       - "443:443"
+    extra_hosts:
+      - "${USER}.42.fr:127.0.0.1"
     healthcheck:
       test: curl -k -f https://localhost/healthcheck || exit 1
       interval: 10s

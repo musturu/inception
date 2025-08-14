@@ -2,6 +2,7 @@ FROM alpine:3.19
 
 RUN apk add --no-cache nginx openssl curl
 
+
 RUN mkdir -p /etc/nginx/ssl && \
     openssl req -x509 -nodes -days 365 \
     -newkey rsa:2048 \
@@ -10,6 +11,8 @@ RUN mkdir -p /etc/nginx/ssl && \
     -subj "/CN=$NGINX_HOST"
 
 COPY conf.nginx /etc/nginx/nginx.conf
+
+RUN sed -i "s/\$NGINX_HOST/${NGINX_HOST}/g" /etc/nginx/nginx.conf
 
 EXPOSE 443
 

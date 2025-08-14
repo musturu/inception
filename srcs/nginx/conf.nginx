@@ -6,10 +6,15 @@ events { worker_connections 1024; }
 http {
     include       mime.types;
     default_type  application/octet-stream;
+    gzip on;
+    gzip_types text/plain text/css application/json application/javascript text/xml application/xml application/xml+rss text/javascript;
+    gzip_min_length 1000;
+    gzip_vary on;
 
     server {
         listen 443 ssl;
-        server_name loren.42.fr;
+        server_name $NGINX_HOST.42.fr;
+
 
         ssl_certificate     /etc/nginx/ssl/nginx.crt;
         ssl_certificate_key /etc/nginx/ssl/nginx.key;
@@ -31,7 +36,12 @@ http {
             deny all;
         }
 
- 		location ~ \.php$ {
+
+        location / { 
+            try_files $uri $uri/ /index.php?$args;
+        }
+
+		location ~ \.php$ {
 			# Parses PHP URLs for proper routing
 			fastcgi_split_path_info ^(.+\.php)(/.+)$;
 

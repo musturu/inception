@@ -8,7 +8,7 @@ define( 'DB_CHARSET', 'utf8' );
 define( 'DB_COLLATE', '' );
 
 /* WordPress database table prefix */
-\$table_prefix = 'wp_';
+$table_prefix = 'wp_';
 
 /* Debug settings */
 define( 'WP_DEBUG', true );

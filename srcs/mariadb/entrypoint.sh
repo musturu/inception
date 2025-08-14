@@ -6,6 +6,9 @@ echo "Starting MariaDB entrypoint script..."
 ROOT_PW=$(cat $MYSQL_ROOT_PASSWORD_FILE)
 DB_PW=$(cat $MYSQL_PASSWORD_FILE)
 
+printenv | grep MYSQL
+echo "Root password: $ROOT_PW"
+echo "Database password: $DB_PW"
 
 # Initialize database if not exists
 if [ ! -d /var/lib/mysql/mysql ]; then

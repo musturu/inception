@@ -1,6 +1,6 @@
 SERVICE_ENV_FILES := ./srcs/mariadb/.env.mariadb ./srcs/wordpress/.env.wordpress
-SECRETS_FILES := ./secrets/db_password.txt ./secrets/db_root_password.txt
-VOLUME_PATHS := $(HOME)/data/db $(HOME)/data/wp/html
+SECRETS_FILES := ./secrets/db_password.txt ./secrets/db_root_password.txt ./secrets/ftp_password.txt
+VOLUME_PATHS := $(HOME)/data/db $(HOME)/data/wp/html $(HOME)/data/redis
 
 all: envs volumes secrets up
 
@@ -28,12 +28,15 @@ volumes:
 	@sudo chmod -R 777 $(HOME)/data/db
 	@sudo chown -R 82:82 $(HOME)/data/wp
 	@sudo chmod -R 777 $(HOME)/data/wp
+	@sudo chown -R 10:101 $(HOME)/data/redis
+	@sudo chmod -R 770 $(HOME)/data/redis
 	@echo "Volume directories prepared with correct permissions."
 
 secrets:
 	@mkdir -p ./secrets
 	@tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 > ./secrets/db_password.txt
 	@tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 > ./secrets/db_root_password.txt
+	@tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 > ./secrets/ftp_password.txt
 
 
 up:
@@ -43,7 +46,7 @@ down:
 	docker compose -f ./srcs/docker-compose.yml down
 
 clean:
-	rm -f $(SERVICE_ENV_FILES) $(SECRETS_FILES)
+	rm -rf $(SERVICE_ENV_FILES) secrets/
 
 fclean: down clean
 	@echo "Removing volume directories..."

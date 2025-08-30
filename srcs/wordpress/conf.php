@@ -14,10 +14,7 @@ $table_prefix = 'wp_';
 define( 'WP_DEBUG', true );
 define( 'WP_DEBUG_LOG', true );
 
-/* Absolute path to the WordPress directory */
-if ( ! defined( 'ABSPATH' ) ) {
-    define( 'ABSPATH', dirname( __FILE__ ) . '/' );
-}
-
-/* Sets up WordPress vars and included files */
-require_once ABSPATH . 'wp-settings.php';
+/* Redis Object Cache configuration */
+define('WP_REDIS_DISABLED', false);
+define('WP_REDIS_HOST', 'redis');
+define('WP_REDIS_PORT', 6379);

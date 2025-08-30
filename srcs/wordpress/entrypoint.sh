@@ -45,10 +45,36 @@ else
     exit 1
 fi
 
-# Ensure proper ownership and permissions for WordPress files
+# append require_once for the custom config
+cat <<EOF >> /var/www/html/wp-config.php
+
+/* Absolute path to the WordPress directory */
+if ( ! defined( 'ABSPATH' ) ) {
+    define( 'ABSPATH', dirname( __FILE__ ) . '/' );
+}
+
+/* Sets up WordPress vars and included files */
+require_once ABSPATH . 'wp-settings.php';
+EOF
+
+# Download and install Redis plugin
+log "Downloading Redis Object Cache plugin..."
+update-ca-certificates
+if ! curl -fSL https://downloads.wordpress.org/plugin/redis-cache.2.6.3.zip -o /tmp/redis-cache.zip; then
+    log "Error: Failed to download Redis plugin with curl."
+    exit 1
+fi
+unzip -o /tmp/redis-cache.zip -d /var/www/html/wp-content/plugins/ || { log "Error: Failed to extract Redis plugin."; exit 1; }
+rm /tmp/redis-cache.zip
+
+
+# Set ownership and permissions
 log "Setting correct permissions for /var/www/html/..."
 chown -R www-data:www-data /var/www/html || { log "Error: Failed to set ownership."; exit 1; }
 chmod -R 755 /var/www/html || { log "Error: Failed to set permissions."; exit 1; }
+
+log "Starting PHP-FPM..."
+exec php-fpm81 --nodaemonize
 
 # Start PHP-FPM
 log "Starting PHP-FPM..."

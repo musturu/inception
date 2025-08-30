@@ -10,6 +10,7 @@ RUN mkdir -p /etc/nginx/ssl && \
     -out /etc/nginx/ssl/nginx.crt \
     -subj "/CN=$NGINX_HOST"
 
+
 COPY conf.nginx /etc/nginx/nginx.conf
 
 RUN sed -i "s/\$NGINX_HOST/${NGINX_HOST}/g" /etc/nginx/nginx.conf

@@ -4,6 +4,7 @@ FROM alpine:3.19
 # Install PHP-FPM, required PHP extensions, and curl
 RUN apk add --no-cache \
     php81 \
+    php81-cli \
     php81-fpm \
     php81-mysqli \
     php81-json \
@@ -12,7 +13,10 @@ RUN apk add --no-cache \
     php81-curl \
     php81-mbstring \
     gettext \
-    curl
+    curl \
+    mysql-client \
+    unzip \
+    ca-certificates
 
 RUN getent group www-data || addgroup -g 82 -S www-data
 RUN getent passwd www-data || adduser -u 82 -S www-data -G www-data

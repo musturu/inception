@@ -1,0 +1,60 @@
+<!doctype html>
+<html lang="en">
+<head>
+  <meta charset="utf-8">
+  <title>Services Index</title>
+  <meta name="description" content="Access your local services: WordPress, Adminer, Grafana, and FTP.">
+  <link rel="stylesheet" href="style.css">
+  <script defer src="script.js"></script>
+</head>
+  <header class="site-header">
+    <div class="wrap">
+      <h1>Local Services</h1>
+      <p class="subtitle">Quick links to services provided by this stack</p>
+    </div>
+  </header>
+
+  <main class="wrap">
+    <section class="cards" aria-label="Services">
+      <a class="card" href="https://localhost/wordpress/" target="_blank" rel="noopener noreferrer">
+        <div class="card-icon">📝</div>
+        <h2>WordPress</h2>
+        <p>CMS served via PHP-FPM &amp; Nginx.</p>
+        <span class="meta">HTTPS • Port 443</span>
+      </a>
+
+      <a class="card" href="http://localhost:8081/" target="_blank" rel="noopener noreferrer">
+        <div class="card-icon">🗄️</div>
+        <h2>Adminer</h2>
+        <p>Database UI for MariaDB.</p>
+        <span class="meta">Port 8081</span>
+      </a>
+
+      <a class="card" href="http://localhost:3000/" target="_blank" rel="noopener noreferrer">
+        <div class="card-icon">📊</div>
+        <h2>Grafana</h2>
+        <p>Metrics &amp; dashboards.</p>
+        <span class="meta">Port 3000</span>
+      </a>
+
+      <a class="card" href="ftp://localhost:21/" target="_blank" rel="noopener noreferrer">
+        <div class="card-icon">📂</div>
+        <h2>FTP</h2>
+        <p>vsftpd file access.</p>
+        <span class="meta">Port 21</span>
+      </a>
+    </section>
+
+    <div class="controls">
+      <button id="refresh-btn" class="btn">Refresh</button>
+    </div>
+  </main>
+
+  <footer class="site-footer">
+    <div class="wrap">
+      <small>Inception — local development environment</small>
+    </div>
+  </footer>
+  </footer>
+</body>
+</html>

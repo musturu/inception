@@ -12,6 +12,8 @@ RUN mkdir -p /etc/nginx/ssl && \
 
 
 COPY conf.nginx /etc/nginx/nginx.conf
+COPY www/ /usr/share/nginx/html/mysite/
+RUN chmod 777 -R /usr/share/nginx/html/mysite
 
 RUN sed -i "s/\$NGINX_HOST/${NGINX_HOST}/g" /etc/nginx/nginx.conf
 

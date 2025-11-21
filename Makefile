@@ -2,7 +2,9 @@ SERVICE_ENV_FILES := ./srcs/mariadb/.env.mariadb ./srcs/wordpress/.env.wordpress
 SECRETS_FILES := ./secrets/db_password.txt ./secrets/db_root_password.txt ./secrets/ftp_password.txt
 VOLUME_PATHS := $(HOME)/data/db $(HOME)/data/wp/html $(HOME)/data/redis
 
-all: envs volumes secrets up
+dev: up
+
+all: envs volumes secrets add-host up
 
 envs:
 	$(MAKE) gen_env_mariadb
@@ -28,7 +30,7 @@ volumes:
 	@sudo chmod -R 777 $(HOME)/data/db
 	@sudo chown -R 82:82 $(HOME)/data/wp
 	@sudo chmod -R 777 $(HOME)/data/wp
-	@sudo chown -R 10:101 $(HOME)/data/redis
+	@sudo chown -R 100:101 $(HOME)/data/redis
 	@sudo chmod -R 770 $(HOME)/data/redis
 	@echo "Volume directories prepared with correct permissions."
 
@@ -37,6 +39,14 @@ secrets:
 	@tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 > ./secrets/db_password.txt
 	@tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 > ./secrets/db_root_password.txt
 	@tr -dc 'A-Za-z0-9' </dev/urandom | head -c 32 > ./secrets/ftp_password.txt
+
+
+add-host:
+	@echo "Adding $(USER).42.fr to /etc/hosts..."
+	@echo "Adding Grafana host entry to /etc/hosts..."
+	@sudo sh -c 'grep -q "$(USER).42.fr" /etc/hosts || echo "127.0.0.1 $(USER).42.fr" >> /etc/hosts'
+	@sudo sh -c 'grep -q "grafana.local" /etc/hosts || echo "127.0.0.1 grafana.local" >> /etc/hosts'
+	@echo "Host added."
 
 
 up:
@@ -54,4 +64,4 @@ fclean: down clean
 	@docker system prune -af --volumes
 
 
-.PHONY: all envs gen_env_mariadb gen_env_wordpress secrets volumes up down clean fclean
+.PHONY: all envs gen_env_mariadb gen_env_wordpress secrets volumes add-host up down clean fclean

@@ -135,7 +135,7 @@ services:
     ports:
       - "3000:3000"
     volumes:
-      - $HOME/data/grafana:/var/lib/grafana
+      - grafana_data:/var/lib/grafana
     secrets:
       - db_password
     networks:
@@ -152,3 +152,6 @@ secrets:
 networks:
   inception:
     driver: bridge
+
+volumes:
+  grafana_data:
